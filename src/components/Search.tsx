@@ -2,10 +2,10 @@ import { Input, ConfigProvider } from "antd";
 import { useWeather } from "../context/weatherContext";
 
 export default function Search() {
-  const { changeCity } = useWeather();
+  const { changeCity, isError } = useWeather();
 
   const handleSearch = (value: string) => {
-    changeCity(value);
+    if (value.trim()) changeCity(value);
   };
 
   return (
@@ -13,7 +13,9 @@ export default function Search() {
       theme={{
         components: {
           Input: {
-            colorBgContainer: "rgba(255, 255, 255, 0.3)",
+            colorBgContainer: isError
+              ? "rgba(250, 58, 58, 0.42)"
+              : "rgba(255, 255, 255, 0.3)",
             colorText: "#ffffff",
             colorTextPlaceholder: "rgba(255, 255, 255, 0.8)",
 
@@ -22,7 +24,9 @@ export default function Search() {
             hoverBorderColor: "rgba(255, 255, 255, 0.3)",
           },
           Button: {
-            colorPrimary: "rgba(255, 255, 255, 0.3)",
+            colorPrimary: isError
+              ? "rgba(250, 58, 58, 0.61)"
+              : "rgba(255, 255, 255, 0.42)",
             colorPrimaryHover: "rgba(255, 255, 255, 0.5)",
             colorPrimaryActive: "rgba(255, 255, 255, 0.6)",
           },
@@ -32,7 +36,7 @@ export default function Search() {
       <Input.Search
         allowClear
         enterButton
-        placeholder="Введите город..."
+        placeholder={isError ? "Город не найден :(" : "Введите город..."}
         onSearch={handleSearch}
       />
     </ConfigProvider>

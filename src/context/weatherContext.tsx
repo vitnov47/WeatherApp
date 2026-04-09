@@ -11,6 +11,7 @@ interface Context {
   changeCity: (newCity: string) => void;
   weatherNow: Weather;
   forecast: Weather[];
+  isError: boolean;
 }
 
 interface ProviderProps {
@@ -24,6 +25,7 @@ export const WeatherProvider = ({ children }: ProviderProps) => {
   const [city, setCity] = useState<string | null>("Москва");
   const [weatherNow, setWeatherNow] = useState<Weather>();
   const [forecast, setForecast] = useState<Weather[]>();
+  const [isError, setIsError] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchWeather = async () => {
@@ -36,7 +38,9 @@ export const WeatherProvider = ({ children }: ProviderProps) => {
         const cleanedForecast: Weather[] = transformForecast(data);
         setWeatherNow(cleanedWeatherNow);
         setForecast(cleanedForecast);
+        setIsError(false);
       } catch (e) {
+        setIsError(true);
         console.log("Ошибка загрузки: ", e);
       }
     };
@@ -48,7 +52,9 @@ export const WeatherProvider = ({ children }: ProviderProps) => {
   };
 
   return (
-    <WeatherContext.Provider value={{ city, changeCity, weatherNow, forecast }}>
+    <WeatherContext.Provider
+      value={{ city, changeCity, weatherNow, forecast, isError }}
+    >
       {children}
     </WeatherContext.Provider>
   );
